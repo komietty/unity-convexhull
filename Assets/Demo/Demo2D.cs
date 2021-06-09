@@ -25,6 +25,7 @@ namespace kmty.geom.d2.animatedquickhull {
 
         void Update() {
             aqh.Execute();
+            transform.rotation = Quaternion.AngleAxis(0.3f, Vector3.up) * transform.rotation; 
         }
 
         void OnGUI() {
