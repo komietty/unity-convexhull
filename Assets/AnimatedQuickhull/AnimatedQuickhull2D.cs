@@ -1,13 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 
 namespace kmty.geom.d2.animatedquickhull {
     using f2 = float2;
-    using f3 = float3;
     using V2 = Vector2;
     using V3 = Vector3;
 
