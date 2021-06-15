@@ -809,7 +809,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat: {fileID: 2100000, guid: d378d88a89934a64db430fa36f396b77, type: 2}
-  speed: 0.2
+  speed: 1
 --- !u!1 &1144961573
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1144961574
 Transform:
   m_ObjectHideFlags: 0
@@ -860,7 +860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5d7705b2c8d1af42852baf8c17c9c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: 30
+  num: 50
   dst: 2
   showNormal: 0
   showOthers: 0
@@ -1018,7 +1018,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f6879293c3354534aaaf9aad34f5cfe2, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: f6879293c3354534aaaf9aad34f5cfe2, type: 3}
       propertyPath: m_Controller

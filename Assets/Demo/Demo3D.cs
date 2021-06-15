@@ -27,8 +27,8 @@ namespace kmty.geom.d3.animatedquickhull {
         void Update() {
             anim.speed = speed;
             aqh.Execute();
-            aqh.CreateMesh();
-            Graphics.DrawMesh(aqh.mesh, V3.zero, Quaternion.identity, mat, 0);
+            //aqh.CreateMesh();
+            //Graphics.DrawMesh(aqh.mesh, V3.zero, Quaternion.identity, mat, 0);
         }
 
         void OnRenderObject() {

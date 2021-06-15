@@ -25,9 +25,7 @@ public class Test3D : MonoBehaviour {
 
     void Update() {
         var l = new List<f3>();
-        foreach (Transform c in transform) {
-            l.Add(c.position);
-        }
+        foreach (Transform c in transform) { l.Add(c.position); }
         convex = new Convex(l);
         convex.ExpandLoop();
     }
@@ -45,9 +43,9 @@ public class Test3D : MonoBehaviour {
         if (showOthers) {
             for (int i = 0; i < nodes.Count; i++) {
                 var n = nodes[i];
-                Gizmos.DrawLine((f3)n.a, (f3)n.b);
-                Gizmos.DrawLine((f3)n.b, (f3)n.c);
-                Gizmos.DrawLine((f3)n.c, (f3)n.a);
+                Gizmos.DrawLine((f3)n.t.a, (f3)n.t.b);
+                Gizmos.DrawLine((f3)n.t.b, (f3)n.t.c);
+                Gizmos.DrawLine((f3)n.t.c, (f3)n.t.a);
                 if (showNormal) {
                     Gizmos.DrawLine(
                         (f3)n.t.GetGravityCenter(),
@@ -62,14 +60,14 @@ public class Test3D : MonoBehaviour {
             if (i == currId && n.neighbors.Count > 3) {
                 Gizmos.color = Color.cyan;
                 n.neighbors.ForEach(nei => {
-                    Gizmos.DrawLine((f3)nei.a, (f3)nei.b);
-                    Gizmos.DrawLine((f3)nei.b, (f3)nei.c);
-                    Gizmos.DrawLine((f3)nei.c, (f3)nei.a);
+                    Gizmos.DrawLine((f3)nei.t.a, (f3)nei.t.b);
+                    Gizmos.DrawLine((f3)nei.t.b, (f3)nei.t.c);
+                    Gizmos.DrawLine((f3)nei.t.c, (f3)nei.t.a);
                 });
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine((f3)n.a, (f3)n.b);
-                Gizmos.DrawLine((f3)n.b, (f3)n.c);
-                Gizmos.DrawLine((f3)n.c, (f3)n.a);
+                Gizmos.DrawLine((f3)n.t.a, (f3)n.t.b);
+                Gizmos.DrawLine((f3)n.t.b, (f3)n.t.c);
+                Gizmos.DrawLine((f3)n.t.c, (f3)n.t.a);
             }
         }
     }

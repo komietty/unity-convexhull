@@ -15,18 +15,59 @@ namespace kmty.geom.d3.animatedquickhull {
     public class AnimatedQuickhull3D {
         public Transform[] bones { get; protected set; }
         public Convex convex { get; protected set; }
-        public Mesh mesh { get; protected set; }
+        public Mesh convexmesh { get; protected set; }
+        public float[] distPerBone { get; }
+        public int itr { get; set; } = 15;
+        const float invsq2 = 0.70710678118f;
 
         public AnimatedQuickhull3D(SkinnedMeshRenderer skin) {
             this.bones = skin.bones;
-            this.mesh = new Mesh();
-            Execute();
+            this.convexmesh = new Mesh();
+
+            this.distPerBone = new float[bones.Length];
+            var mesh = skin.sharedMesh;
+            var vtcs = mesh.vertices;
+            var bspv = mesh.GetBonesPerVertex();
+            var wgts = mesh.GetAllBoneWeights();
+            var bwid = 0;
+            var bindposes = mesh.bindposes;
+
+            for (var vi = 0; vi < vtcs.Length; vi++) {
+                var bw = wgts[bwid];
+                if (bw.weight > 0.1f) {
+                    var i = bw.boneIndex;
+                    var d1 = distPerBone[i];
+                    var d2 = length(vtcs[vi] - (V3)(bindposes[i].inverse * new Vector4(0, 0, 0, 1)));
+                    if (d2 > d1) distPerBone[i] = d2;
+                    bwid += bspv[vi];
+                }
+            }
         }
 
         public void Execute() {
-            convex = new Convex(bones.Select(b => (f3)b.position + new f3(0, 0, 0)));
-            //convex.Expand();
-            convex.ExpandLoop();
+            var bps = new List<f3>();
+            for (var i = 0; i < bones.Length; i++) {
+                var b = bones[i];
+                var d = distPerBone[i];
+                if (d > 0.3f) {
+                    d *= invsq2;
+                    bps.Add(b.position + new V3(-d, -d, -d));
+                    bps.Add(b.position + new V3(+d, +d, +d));
+
+                    bps.Add(b.position + new V3(+d, -d, -d));
+                    bps.Add(b.position + new V3(-d, +d, -d));
+                    bps.Add(b.position + new V3(-d, -d, +d));
+
+                    bps.Add(b.position + new V3(-d, +d, +d));
+                    bps.Add(b.position + new V3(+d, -d, +d));
+                    bps.Add(b.position + new V3(+d, +d, -d));
+
+                } else { 
+                    bps.Add(b.position);
+                }
+            }
+            convex = new Convex(bps);
+            convex.ExpandLoop(itr);
         }
 
         public void CreateMesh() { 
@@ -49,9 +90,9 @@ namespace kmty.geom.d3.animatedquickhull {
                 ts[j + 1] = j + 1;
                 ts[j + 2] = j + 2;
             }
-            this.mesh.SetVertices(vs);
-            this.mesh.SetNormals(ns);
-            this.mesh.SetTriangles(ts, 0);
+            this.convexmesh.SetVertices(vs);
+            this.convexmesh.SetNormals(ns);
+            this.convexmesh.SetTriangles(ts, 0);
         }
     }
 }
