@@ -14,7 +14,7 @@ namespace kmty.geom.d2.animatedquickhull {
         public Convex convex { get; protected set; }
         public float[] distPerBone { get; }
 
-        public AnimatedQuickhull2D(SkinnedMeshRenderer skin) {
+        public AnimatedQuickhull2D(SkinnedMeshRenderer skin, float weightThreshold = 0.5f) {
             this.bones = skin.bones;
             this.distPerBone = new float[bones.Length];
             var mesh = skin.sharedMesh;
@@ -26,7 +26,7 @@ namespace kmty.geom.d2.animatedquickhull {
 
             for (var vi = 0; vi < vtcs.Length; vi++) {
                 var bw = wgts[bwid];
-                if (bw.weight > 0.1f) {
+                if (bw.weight > weightThreshold) {
                     var i = bw.boneIndex;
                     var d1 = distPerBone[i];
                     var d2 = length(vtcs[vi] - (V3)(bindposes[i].inverse * new Vector4(0, 0, 0, 1)));
@@ -36,12 +36,12 @@ namespace kmty.geom.d2.animatedquickhull {
             }
         }
 
-        public void Execute() {
+        public void Execute(float distanceTheshold) {
             var bps = new List<f2>();
             for (var i = 0; i < bones.Length; i++) {
                 var b = bones[i];
                 var d = distPerBone[i];
-                if (d > 0.3f) {
+                if (d > distanceTheshold) {
                     bps.Add((V2)b.position + new V2(-d, -d));
                     bps.Add((V2)b.position + new V2(+d, -d));
                     bps.Add((V2)b.position + new V2(-d, +d));

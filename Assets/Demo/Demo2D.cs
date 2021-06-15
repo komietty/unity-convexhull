@@ -7,6 +7,8 @@ namespace kmty.geom.d2.animatedquickhull {
     using f2 = float2;
 
     public class Demo2D : MonoBehaviour {
+        [SerializeField, Range(0, 1)] protected float wgtThreshold = 0.3f;
+        [SerializeField, Range(0, 1)] protected float dstThreshold = 0.3f;
         protected AnimatedQuickhull2D aqh;
         protected SkinnedMeshRenderer skin;
         protected Convex cvx;
@@ -15,13 +17,13 @@ namespace kmty.geom.d2.animatedquickhull {
 
         void Start() {
             skin = GetComponentInChildren<SkinnedMeshRenderer>();
-            aqh = new AnimatedQuickhull2D(skin);
+            aqh = new AnimatedQuickhull2D(skin, wgtThreshold);
             style = new GUIStyle();
             style.fontSize = 20;
         }
 
         void Update() {
-            aqh.Execute();
+            aqh.Execute(dstThreshold);
             transform.rotation = Quaternion.AngleAxis(0.3f, Vector3.up) * transform.rotation; 
         }
 

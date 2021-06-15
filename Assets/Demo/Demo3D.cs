@@ -8,7 +8,10 @@ namespace kmty.geom.d3.animatedquickhull {
 
     public class Demo3D : MonoBehaviour {
         [SerializeField] protected Material mat;
-        [SerializeField, Range(0, 1)] protected float speed;
+        [SerializeField, Range(1, 20)] protected int itr = 15;
+        [SerializeField, Range(0, 1)] protected float dstThreshold = 0.3f;
+        [SerializeField, Range(0, 1)] protected float wgtThreshold = 0.3f;
+        [SerializeField, Range(0, 1)] protected float speed = 1;
         protected AnimatedQuickhull3D aqh;
         protected Animator anim;
         protected SkinnedMeshRenderer skin;
@@ -18,17 +21,17 @@ namespace kmty.geom.d3.animatedquickhull {
         void Start() {
             skin = GetComponentInChildren<SkinnedMeshRenderer>();
             anim = GetComponent<Animator>();
-            aqh = new AnimatedQuickhull3D(skin);
+            aqh = new AnimatedQuickhull3D(skin, wgtThreshold);
             style = new GUIStyle();
             style.fontSize = 20;
 
         }
 
         void Update() {
+            transform.rotation = Quaternion.AngleAxis(0.3f, V3.up) * transform.rotation; 
             anim.speed = speed;
-            aqh.Execute();
-            //aqh.CreateMesh();
-            //Graphics.DrawMesh(aqh.mesh, V3.zero, Quaternion.identity, mat, 0);
+            aqh.Execute(dstThreshold, itr);
+            Graphics.DrawMesh(aqh.CreateMesh(), V3.left * 1.5f, Quaternion.identity, mat, 0);
         }
 
         void OnRenderObject() {
