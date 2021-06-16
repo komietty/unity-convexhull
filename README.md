@@ -2,8 +2,7 @@
 
 Realtime Fast convex generator for Unity.
 
-<img src="Recordings/output2d.gif">
-<img src="Recordings/output3d.gif">
+<img src="Recordings/output2d.gif" width="50%"><img src="Recordings/output3d.gif" width="50%">
 
 ## Usage
 
