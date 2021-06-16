@@ -2,8 +2,6 @@
 
 Realtime Fast convex generator for Unity.
 
-This will help you if you are looking for more precise bounding box than default mesh bounds.
-
 <img src="Recordings/output2d.gif">
 <img src="Recordings/output3d.gif">
 
