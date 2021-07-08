@@ -9,54 +9,10 @@ namespace kmty.geom.d3.animatedquickhull {
     using f3 = float3;
     using V3 = Vector3;
 
-    public class AnimatedQuickhull3D {
+    public abstract class AnimatedQuickhull3D { 
         public Transform[] bones { get; protected set; }
         public Convex convex { get; protected set; }
-        public float[] distPerBone { get; }
-
-        public AnimatedQuickhull3D(SkinnedMeshRenderer skin, float weightThreshold) {
-            this.bones = skin.bones;
-            this.distPerBone = new float[bones.Length];
-            var mesh = skin.sharedMesh;
-            var vtcs = mesh.vertices;
-            var bspv = mesh.GetBonesPerVertex();
-            var wgts = mesh.GetAllBoneWeights();
-            var bwid = 0;
-            var bindposes = mesh.bindposes;
-
-            for (var vi = 0; vi < vtcs.Length; vi++) {
-                var bw = wgts[bwid];
-                if (bw.weight > weightThreshold) {
-                    var i = bw.boneIndex;
-                    var d1 = distPerBone[i];
-                    var d2 = length(vtcs[vi] - (V3)(bindposes[i].inverse * new Vector4(0, 0, 0, 1)));
-                    if (d2 > d1) distPerBone[i] = d2;
-                    bwid += bspv[vi];
-                }
-            }
-        }
-
-        public void Execute(float distanceThreshold, int itr) {
-            var bps = new List<f3>();
-            for (var i = 0; i < bones.Length; i++) {
-                var b = bones[i];
-                var d = distPerBone[i];
-                if (d > distanceThreshold) {
-                    bps.Add(b.position + new V3(-d, -d, -d));
-                    bps.Add(b.position + new V3(+d, +d, +d));
-                    bps.Add(b.position + new V3(+d, -d, -d));
-                    bps.Add(b.position + new V3(-d, +d, -d));
-                    bps.Add(b.position + new V3(-d, -d, +d));
-                    bps.Add(b.position + new V3(-d, +d, +d));
-                    bps.Add(b.position + new V3(+d, -d, +d));
-                    bps.Add(b.position + new V3(+d, +d, -d));
-                } else { 
-                    bps.Add(b.position);
-                }
-            }
-            convex = new Convex(bps);
-            convex.ExpandLoop(itr);
-        }
+        public abstract void Execute(int itr);
 
         public Mesh CreateMesh() {
             var mesh = new Mesh();
@@ -79,6 +35,87 @@ namespace kmty.geom.d3.animatedquickhull {
             mesh.SetTriangles(ts, 0);
             mesh.RecalculateNormals();
             return mesh;
+        }
+    }
+
+    public class AnimatedQuickhull3DIndex: AnimatedQuickhull3D {
+        protected IEnumerable<int> vids;
+        protected Mesh mesh;
+        protected V3[] vrts;
+        protected int[] tris;
+
+        public AnimatedQuickhull3DIndex(SkinnedMeshRenderer skin, IEnumerable<int> tids) {
+            this.bones = skin.bones;
+            this.mesh = skin.sharedMesh;
+            this.vrts = mesh.vertices; 
+            this.tris = mesh.triangles;
+            vids = tids.Select(tid => tris[tid * 3]);
+        }
+
+        public override void Execute(int itr) {
+            var tgts = new List<f3>();
+            var mtxs = new float4x4[bones.Length];
+            for (var i = 0; i < bones.Length; i++) tgts.Add(bones[i].position);
+            for (int i = 0; i < mtxs.Length;  i++) mtxs[i] = bones[i].localToWorldMatrix * mesh.bindposes[i];
+            foreach (var i in vids) {
+                var w = mesh.boneWeights[i];
+                var m = mtxs[w.boneIndex0] * w.weight0 +
+                        mtxs[w.boneIndex1] * w.weight1 +
+                        mtxs[w.boneIndex2] * w.weight2 +
+                        mtxs[w.boneIndex3] * w.weight3;
+                tgts.Add(((Matrix4x4)m).MultiplyPoint3x4(vrts[i]));
+            }
+            convex = new Convex(tgts);
+            convex.ExpandLoop(itr);
+        }
+    }
+
+    public class AnimatedQuickhull3DAprox: AnimatedQuickhull3D { 
+        public float[] distPerBone { get; }
+        public float   distanceThold;
+
+        public AnimatedQuickhull3DAprox(SkinnedMeshRenderer skin, float weightThold, float distanceThold) {
+            this.bones = skin.bones;
+            this.distPerBone = new float[bones.Length];
+            this.distanceThold = distanceThold;
+            var mesh = skin.sharedMesh;
+            var vtcs = mesh.vertices;
+            var bspv = mesh.GetBonesPerVertex();
+            var wgts = mesh.GetAllBoneWeights();
+            var bwid = 0;
+            var bindposes = mesh.bindposes;
+            for (var vi = 0; vi < vtcs.Length; vi++) {
+                var bw = wgts[bwid];
+                if (bw.weight > weightThold) {
+                    var i = bw.boneIndex;
+                    var d1 = distPerBone[i];
+                    var d2 = length(vtcs[vi] - (V3)(bindposes[i].inverse * new Vector4(0, 0, 0, 1)));
+                    if (d2 > d1) distPerBone[i] = d2;
+                    bwid += bspv[vi];
+                }
+            }
+        }
+
+        public override void Execute(int itr) {
+            var bps = new List<f3>();
+            for (var i = 0; i < bones.Length; i++) {
+                var b = bones[i];
+                var d = distPerBone[i];
+                if (d > distanceThold) {
+                    bps.Add(b.position + new V3(-d, -d, -d));
+                    bps.Add(b.position + new V3(+d, +d, +d));
+                    bps.Add(b.position + new V3(+d, -d, -d));
+                    bps.Add(b.position + new V3(-d, +d, -d));
+                    bps.Add(b.position + new V3(-d, -d, +d));
+                    bps.Add(b.position + new V3(-d, +d, +d));
+                    bps.Add(b.position + new V3(+d, -d, +d));
+                    bps.Add(b.position + new V3(+d, +d, -d));
+                } else { 
+                    bps.Add(b.position);
+                }
+            }
+            convex = new Convex(bps);
+            convex.ExpandLoop(itr);
         }
     }
 }
