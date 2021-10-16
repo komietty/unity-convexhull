@@ -7,6 +7,8 @@ namespace kmty.geom.d3.animatedquickhull {
     public class Demo3D_Index: MonoBehaviour {
         [SerializeField] protected Material mat;
         [SerializeField] protected Material dbg;
+        [SerializeField] protected bool createCollider;
+        [SerializeField] protected bool showDebugMesh;
         [SerializeField, Range(1, 30)] protected int itr = 15;
         [SerializeField, Range(0, 1)] protected float speed = 1;
         [SerializeField] int[] triangleIndices;
@@ -14,24 +16,28 @@ namespace kmty.geom.d3.animatedquickhull {
         protected Animator anim;
         protected SkinnedMeshRenderer skin;
         protected Convex cvx;
+        protected MeshCollider cld;
 
         void Start() {
             skin = GetComponentInChildren<SkinnedMeshRenderer>();
             anim = GetComponent<Animator>();
             aqh = new AnimatedQuickhull3DIndex(skin, triangleIndices);
+            if (createCollider) { cld  = gameObject.AddComponent<MeshCollider>(); }
         }
 
         void Update() {
-            transform.rotation = Quaternion.AngleAxis(0.3f, V3.up) * transform.rotation; 
+            //transform.rotation = Quaternion.AngleAxis(0.3f, V3.up) * transform.rotation; 
             anim.speed = speed;
             aqh.Execute(itr);
-            Graphics.DrawMesh(aqh.CreateMesh(), V3.left * 1.5f, Quaternion.identity, mat, 0);
-            //Graphics.DrawMesh(aqh.CreateMesh(), V3.zero, Quaternion.identity, mat, 0);
+            var m = aqh.CreateMesh();
+            cld.sharedMesh = m;
+            if (showDebugMesh) Graphics.DrawMesh(m, V3.zero, Quaternion.identity, mat, 0);
         }
 
         void OnRenderObject() {
             dbg.SetPass(0);
             GL.PushMatrix();
+            GL.Color(Color.green);
             aqh.convex.Draw();
             GL.PopMatrix();
         }
