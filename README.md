@@ -11,7 +11,7 @@ Because this creates mesh, it could be used as MeshCollider input (Demo below).
 ## 3D Convexhull
 <img src="Recordings/3d.gif" width="600px">
 
-## Collision Demo (Slow animation ver)
+## Collision Demo
 <img src="Recordings/collider.gif" width="600px">
 
 ## Usage
