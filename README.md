@@ -2,7 +2,7 @@
 
 Realtime fast convexhull generator for Unity.
 
-Since this module generates a mesh, it could be used as MeshCollider input so as to RigidBody Collision.
+Since this module generates a mesh, it is possible to use this as a collider input for rigidBody collision.
 
 
 ## 2D Convexhull
