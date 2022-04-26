@@ -6,10 +6,10 @@ Since this module generates a mesh, it is possible to use output mesh as a colli
 
 
 ## 2D Convexhull
-<img src="Recordings/2d.gif" width="600px">
+<img src="Recordings/2d.gif">
 
 ## 3D Convexhull
-<img src="Recordings/3d.gif" width="600px">
+<img src="Recordings/3d.gif">
 
 ## Usage
 You can assign specific vertex on scene view to include convex calculation.
