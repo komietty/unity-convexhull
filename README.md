@@ -1,8 +1,8 @@
 # unity-animated-convexhull
 
-Realtime Fast convex generator for Unity.
+Realtime fast convexhull generator for Unity.
 
-Because this creates mesh, it could be used as MeshCollider input (Demo below).
+Since this module generates a mesh, it could be used as MeshCollider input so as to RigidBody Collision.
 
 
 ## 2D Convexhull
