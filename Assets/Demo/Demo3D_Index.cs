@@ -30,7 +30,7 @@ namespace kmty.geom.d3.animatedquickhull {
             anim.speed = speed;
             aqh.Execute(itr);
             var m = aqh.CreateMesh();
-            cld.sharedMesh = m;
+            if(cld != null) cld.sharedMesh = m;
             if (showDebugMesh) Graphics.DrawMesh(m, V3.zero, Quaternion.identity, mat, 0);
         }
 

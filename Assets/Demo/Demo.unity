@@ -158,7 +158,7 @@ MonoBehaviour:
   createCollider: 1
   showDebugMesh: 1
   itr: 25
-  speed: 0.05
+  speed: 0.8
   triangleIndices: e438000064380000763900006b3b000096200000aa1f00006c210000f52200007d21000013230000ee39000075360000553700005f3a0000f4610000d4620000
 --- !u!1 &705507993
 GameObject:
@@ -370,7 +370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &1624661422
 ParticleSystemRenderer:
   serializedVersion: 6
