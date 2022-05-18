@@ -1,4 +1,4 @@
-# unity-animated-convexhull
+# unity-convexhull
 
 Realtime fast convexhull generator for Unity.
 
