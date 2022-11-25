@@ -15,6 +15,3 @@ Since this module generates a mesh, it is possible to use output mesh as a colli
 You can assign specific vertex on scene view to include convex calculation.
 
 using a [simplex geom submodule](https://github.com/komietty/unity-simplex-geometry), so update submodule first.
-
-## License
-[MIT](LICENSE)
